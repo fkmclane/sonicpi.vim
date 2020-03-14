@@ -39,6 +39,10 @@ if !exists('g:sonicpi_enabled')
   let g:sonicpi_enabled = 1
 endif
 
+if !exists('g:sonicpi_log_enabled')
+  let g:sonicpi_log_enabled = 1
+endif
+
 if !exists('g:sonicpi_keymaps_enabled')
   let g:sonicpi_keymaps_enabled = 1
 endif
@@ -304,7 +308,7 @@ command! -nargs=0 SonicPiStop call s:SonicPiStop()
 
 " Set keymaps in Normal mode
 function! s:load_keymaps()
-  if g:sonicpi_logs != '' && (has('nvim') || has('terminal'))
+  if g:sonicpi_logs != '' && (has('nvim') || has('terminal')) && g:sonicpi_log_enabled
     nnoremap <leader>r :SonicPiShowLog<CR>:SonicPiSendBuffer<CR>
     nnoremap <leader>c :SonicPiCloseLog<CR>
   else
