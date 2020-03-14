@@ -1,42 +1,87 @@
-" From server/sonicpi/lib/sonicpi/spiderapi.rb
-syntax keyword rubyKeyword at bools choose comment cue dec density dice factor?
-syntax keyword rubyKeyword in_thread inc knit ndefine one_in print
-syntax keyword rubyKeyword puts quantise rand rand_i range rdist ring rrand
-syntax keyword rubyKeyword rrand_i rt shuffle sleep spread sync uncomment
-syntax keyword rubyKeyword use_bpm use_bpm_mul use_random_seed wait with_bpm
-syntax keyword rubyKeyword with_bpm_mul with_random_seed with_tempo
+" From app/server/ruby/lib/sonicpi/lang/core.rb
+syntax keyword rubyKeyword assert assert_equal assert_error assert_similar at
+syntax keyword rubyKeyword beat block_duration block_slept? bools bt choose
+syntax keyword rubyKeyword clear cue current_beat_duration current_bpm
+syntax keyword rubyKeyword current_random_seed current_sched_ahead_time
+syntax keyword rubyKeyword current_time dec density dice doubles eval_file
+syntax keyword rubyKeyword factor? get halves in_thread inc knit line
+syntax keyword rubyKeyword load_buffer load_example look map on one_in osc
+syntax keyword rubyKeyword osc_send pick print puts quantise ramp rand
+syntax keyword rubyKeyword rand_back rand_i rand_i_look rand_look rand_reset
+syntax keyword rubyKeyword rand_skip range rdist reset ring rrand rrand_i rt
+syntax keyword rubyKeyword run_code run_file set set_sched_ahead_time! shuffle
+syntax keyword rubyKeyword sleep spark spark_graph spread stop stretch sync
+syntax keyword rubyKeyword sync_bpm tick tick_reset tick_reset_all tick_set
+syntax keyword rubyKeyword time_warp uncomment use_bpm use_bpm_mul
+syntax keyword rubyKeyword use_cue_logging use_osc use_osc_logging
+syntax keyword rubyKeyword use_random_seed use_real_time use_sched_ahead_time
+syntax keyword rubyKeyword vector version vt wait with_bpm with_bpm_mul
+syntax keyword rubyKeyword with_cue_logging with_osc with_osc_logging
+syntax keyword rubyKeyword with_random_seed with_real_time
+syntax keyword rubyKeyword with_sched_ahead_time with_swing
 syntax keyword rubyDefine define defonce
-syntax keyword rubyRepeat live_loop
-" From server/sonicpi/lib/sonicpi/mods/sound.rb
-syntax keyword rubyKeyword __freesound __freesound_path chord chord_degree
-syntax keyword rubyKeyword complex_sampler_args? control degree
-syntax keyword rubyKeyword fetch_or_cache_sample_path find_sample_with_path
-syntax keyword rubyKeyword free_job_bus hz_to_midi job_bus job_fx_group
-syntax keyword rubyKeyword job_mixer job_proms_joiner job_synth_group
-syntax keyword rubyKeyword job_synth_proms_add job_synth_proms_rm
-syntax keyword rubyKeyword join_thread_and_subthreads kill_fx_job_group
-syntax keyword rubyKeyword kill_job_group load_sample load_samples
-syntax keyword rubyKeyword load_synthdefs midi_to_hz
-syntax keyword rubyKeyword normalise_and_resolve_synth_args normalise_args!
-syntax keyword rubyKeyword note note_info play play_chord play_pattern
-syntax keyword rubyKeyword play_pattern_timed recording_save
-syntax keyword rubyKeyword resolve_sample_symbol_path rest? sample
-syntax keyword rubyKeyword sample_buffer sample_duration sample_info
-syntax keyword rubyKeyword sample_loaded? sample_names scale
-syntax keyword rubyKeyword scale_time_args_to_bpm! set_control_delta!
-syntax keyword rubyKeyword set_current_synth set_mixer_hpf!
-syntax keyword rubyKeyword set_mixer_hpf_disable! set_mixer_lpf!
-syntax keyword rubyKeyword set_mixer_lpf_disable! set_sched_ahead_time!
-syntax keyword rubyKeyword set_volume! shutdown_job_mixer stop synth
-syntax keyword rubyKeyword trigger_chord trigger_fx trigger_inst
-syntax keyword rubyKeyword trigger_sampler trigger_specific_sampler
-syntax keyword rubyKeyword trigger_synth trigger_synth_with_resolved_args
-syntax keyword rubyKeyword use_arg_bpm_scaling use_arg_checks use_debug use_fx
-syntax keyword rubyKeyword use_merged_synth_defaults use_sample_bpm
-syntax keyword rubyKeyword use_sample_pack use_sample_pack_as use_synth
-syntax keyword rubyKeyword use_synth_defaults use_timing_warnings
-syntax keyword rubyKeyword use_transpose validate_if_necessary!
+syntax keyword rubyRepeat live_loop loop
+syntax region rubyComment start="\<comment\>" end="\<end\>" contains=rubySpaceError,rubyTodo
+syntax region rubyComment start="\<ndefine\>" end="\<end\>" contains=rubySpaceError,rubyTodo
+
+" From app/server/ruby/lib/sonicpi/lang/sound.rb
+syntax keyword rubyKeyword all_sample_names buffer control current_arg_checks
+syntax keyword rubyKeyword current_debug current_sample_defaults current_synth
+syntax keyword rubyKeyword current_synth_defaults current_volume fx_names kill
+syntax keyword rubyKeyword live_audio load_sample load_samples load_synthdefs
+syntax keyword rubyKeyword play play_chord play_pattern play_pattern_timed
+syntax keyword rubyKeyword recording_delete recording_save recording_start
+syntax keyword rubyKeyword recording_stop reset_mixer! sample sample_buffer
+syntax keyword rubyKeyword sample_duration sample_free sample_free_all
+syntax keyword rubyKeyword sample_groups sample_info sample_loaded?
+syntax keyword rubyKeyword sample_names sample_paths scsynth_info
+syntax keyword rubyKeyword set_audio_latency! set_control_delta!
+syntax keyword rubyKeyword set_mixer_control! set_recording_bit_depth!
+syntax keyword rubyKeyword set_volume! status synth synth_names
+syntax keyword rubyKeyword use_arg_bpm_scaling use_arg_checks use_debug
+syntax keyword rubyKeyword use_merged_sample_defaults use_merged_synth_defaults
+syntax keyword rubyKeyword use_sample_bpm use_sample_defaults use_synth
+syntax keyword rubyKeyword use_synth_defaults use_timing_guarantees
 syntax keyword rubyKeyword with_arg_bpm_scaling with_arg_checks with_debug
-syntax keyword rubyKeyword with_fx with_merged_synth_defaults with_sample_bpm
-syntax keyword rubyKeyword with_sample_pack with_sample_pack_as with_synth
-syntax keyword rubyKeyword with_synth_defaults with_timing_warnings with_transpose
+syntax keyword rubyKeyword with_fx with_merged_sample_defaults
+syntax keyword rubyKeyword with_merged_synth_defaults with_sample_bpm
+syntax keyword rubyKeyword with_sample_defaults with_synth with_synth_defaults
+syntax keyword rubyKeyword with_timing_guarantees
+
+" From app/server/ruby/lib/sonicpi/lang/pattern.rb
+syntax keyword rubyKeyword play_nested_pattern
+
+" From app/server/ruby/lib/sonicpi/lang/western_theory.rb
+syntax keyword rubyKeyword chord chord_degree chord_invert chord_names
+syntax keyword rubyKeyword current_cent_tuning current_octave current_transpose
+syntax keyword rubyKeyword degree hz_to_midi midi_notes midi_to_hz note
+syntax keyword rubyKeyword note_info note_range octs pitch_to_ratio
+syntax keyword rubyKeyword ratio_to_pitch rest? scale scale_names
+syntax keyword rubyKeyword set_cent_tuning! use_cent_tuning use_octave
+syntax keyword rubyKeyword use_transpose use_tuning with_cent_tuning
+syntax keyword rubyKeyword with_octave with_transpose with_tuning
+
+" From app/server/ruby/lib/sonicpi/lang/maths.rb
+syntax keyword rubyKeyword math_scale
+
+" From app/server/ruby/lib/sonicpi/lang/midi.rb
+syntax keyword rubyKeyword current_midi_defaults midi midi_all_notes_off
+syntax keyword rubyKeyword midi_cc midi_channel_pressure midi_clock_beat
+syntax keyword rubyKeyword midi_clock_tick midi_continue midi_local_control_off
+syntax keyword rubyKeyword midi_local_control_on midi_mode midi_note_off
+syntax keyword rubyKeyword midi_note_on midi_pc midi_pitch_bend
+syntax keyword rubyKeyword midi_poly_pressure midi_raw midi_reset
+syntax keyword rubyKeyword midi_sound_off midi_start midi_stop midi_sysex
+syntax keyword rubyKeyword use_merged_midi_defaults use_midi_defaults
+syntax keyword rubyKeyword use_midi_logging with_merged_midi_defaults
+syntax keyword rubyKeyword with_midi_defaults with_midi_logging
+
+" From app/server/ruby/lib/sonicpi/lang/minecraftpi.rb
+syntax keyword rubyKeyword mc_block_id mc_block_ids mc_block_name
+syntax keyword rubyKeyword mc_block_names mc_camera_fixed mc_camera_normal
+syntax keyword rubyKeyword mc_camera_set_location mc_camera_third_person
+syntax keyword rubyKeyword mc_chat_post mc_checkpoint_restore
+syntax keyword rubyKeyword mc_checkpoint_save mc_get_block mc_get_height
+syntax keyword rubyKeyword mc_get_pos mc_get_tile mc_ground_height mc_location
+syntax keyword rubyKeyword mc_message mc_set_area mc_set_block mc_set_pos
+syntax keyword rubyKeyword mc_set_tile mc_surface_teleport mc_teleport
