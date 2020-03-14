@@ -11,6 +11,10 @@ if !exists('g:sonicpi_check')
   let g:sonicpi_check = 'check'
 endif
 
+if !exists('g:sonicpi_run')
+  let g:sonicpi_run = 'start-server'
+endif
+
 if !exists('g:sonicpi_send')
   let g:sonicpi_send = 'eval-stdin'
 endif
@@ -39,6 +43,7 @@ if !exists('g:sonicpi_keymaps_enabled')
   let g:sonicpi_keymaps_enabled = 1
 endif
 
+let s:server_job = v:null
 let s:record_job = v:null
 
 " Contextual initialization modelled after tpope's vim-sonicpi
@@ -77,6 +82,69 @@ endfunction
 " Extend Ruby syntax to include Sonic Pi terms
 function! s:load_syntax()
   runtime! syntax/sonicpi.vim
+endfunction
+
+function! s:SonicPiServerExitHandler(job, data, ...)
+  let s:server_job = v:null
+endfunction
+
+function! s:SonicPiServerStart()
+  if g:sonicpi_run == ''
+    echo "No run subcommand defined for '" . g:sonicpi_command . "'"
+    return
+  endif
+
+  if !has('nvim') && !(has('job') && has('channel'))
+    echo 'Job control not available'
+    return
+  endif
+
+  if s:server_job != v:null
+    echo 'A server is already running'
+    return
+  endif
+
+  if has('nvim')
+    let s:server_job = jobstart([g:sonicpi_command, g:sonicpi_run], {'on_exit': function('s:SonicPiServerExitHandler')})
+    if s:server_job <= 0
+      s:server_job = v:null
+      echo 'Error starting server'
+      return
+    endif
+  else
+    let s:server_job = job_start([g:sonicpi_command, g:sonicpi_run], {'in_io': 'null', 'out_io': 'null', 'err_io': 'null', 'exit_cb': function('s:SonicPiRecordExitHandler')})
+    if job_status(s:server_job) != "run"
+      s:server_job = v:null
+      echo 'Error starting server'
+      return
+    endif
+  endif
+
+  sleep 7
+
+  call sonicpi#detect()
+
+  if g:vim_redraw
+    execute 'redraw!'
+  endif
+endfunction
+
+function! s:SonicPiServerStop()
+  if !has('nvim') && !(has('job') && has('channel'))
+    echo 'Job control not available'
+    return
+  endif
+
+  if s:server_job == v:null
+    echo 'There is no running server'
+    return
+  endif
+
+  if has('nvim')
+    call jobstop(s:server_job)
+  else
+    call job_stop(s:server_job, "int")
+  endif
 endfunction
 
 function! s:SonicPiSendBuffer()
@@ -212,7 +280,7 @@ endfunction
 function! s:SonicPiStop()
   silent! execute '! ' . g:sonicpi_command . ' ' . g:sonicpi_stop . ' 2>&1 >/dev/null'
   if g:vim_redraw
-    execute ':redraw!'
+    execute 'redraw!'
   endif
 endfunction
 
@@ -224,6 +292,8 @@ function! s:SonicPiExit()
 endfunction
 
 " Export public API
+command! -nargs=0 SonicPiServerStart call s:SonicPiServerStart()
+command! -nargs=0 SonicPiServerStop call s:SonicPiServerStop()
 command! -nargs=0 SonicPiSendBuffer call s:SonicPiSendBuffer()
 command! -nargs=0 SonicPiShowLog call s:SonicPiShowLog()
 command! -nargs=0 SonicPiCloseLog call s:SonicPiCloseLog()
