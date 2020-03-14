@@ -12,7 +12,7 @@ Either Neovim or Vim 8.1+ is required for log, built-in server, and recording su
 
 The plugin enables itself when Sonic Pi is running and the Ruby filetype is initiated (`let g:sonicpi_enabled = 0` to disable), and provides the following features:
 
-* `<leader>r` - Send buffer to Sonic Pi and show log (`let g:sonicpi_log_enabled = 0` to disable automatic log popout)
+* `<leader>r` - Send the current buffer or selection to Sonic Pi and show log (`let g:sonicpi_log_enabled = 0` to disable automatic log popout)
 * `<leader>c` - Close log output (`let g:sonicpi_log_enabled = 0` to disable automatic log popout)
 * `<leader>S` - Send stop message to Sonic Pi
 * Contextual autocompletion of Sonic Pi terms with omnicomplete (`<C-x><C-o>` by default). That is, if you have `synth :zawa,` in the line, omnicomplete will provide parameter names for `:zawa`, et al!

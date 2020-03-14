@@ -151,8 +151,8 @@ function! s:SonicPiServerStop()
   endif
 endfunction
 
-function! s:SonicPiSendBuffer()
-  silent! execute 'w ! ' . g:sonicpi_command . ' ' . g:sonicpi_send . ' 2>&1 >/dev/null'
+function! s:SonicPiSendBuffer() range
+  silent! execute a:firstline . ',' . a:lastline . ' w ! ' . g:sonicpi_command . ' ' . g:sonicpi_send . ' 2>&1 >/dev/null'
 endfunction
 
 function! s:SonicPiShowLog()
@@ -298,7 +298,7 @@ endfunction
 " Export public API
 command! -nargs=0 SonicPiServerStart call s:SonicPiServerStart()
 command! -nargs=0 SonicPiServerStop call s:SonicPiServerStop()
-command! -nargs=0 SonicPiSendBuffer call s:SonicPiSendBuffer()
+command! -nargs=0 -range=% SonicPiSendBuffer let view = winsaveview() | <line1>,<line2>call s:SonicPiSendBuffer() | call winrestview(view)
 command! -nargs=0 SonicPiShowLog call s:SonicPiShowLog()
 command! -nargs=0 SonicPiCloseLog call s:SonicPiCloseLog()
 command! -nargs=0 SonicPiCloseAll call s:SonicPiCloseAll()
@@ -310,9 +310,11 @@ command! -nargs=0 SonicPiStop call s:SonicPiStop()
 function! s:load_keymaps()
   if g:sonicpi_logs != '' && (has('nvim') || has('terminal')) && g:sonicpi_log_enabled
     nnoremap <leader>r :SonicPiShowLog<CR>:SonicPiSendBuffer<CR>
+    vnoremap <leader>r :<C-U>SonicPiShowLog<CR>:'<,'>SonicPiSendBuffer<CR>
     nnoremap <leader>c :SonicPiCloseLog<CR>
   else
     nnoremap <leader>r :SonicPiSendBuffer<CR>
+    vnoremap <leader>r :SonicPiSendBuffer<CR>
   endif
   nnoremap <leader>S :SonicPiStop<CR>
 endfunction
