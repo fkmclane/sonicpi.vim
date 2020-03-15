@@ -88,4 +88,5 @@ let g:sonicpi_record = ''
 ## TODO
 
 * Add named notes (e.g., `:c4`, `:e2`) and chords (e.g., `sus4`, `m7+5`)
-* Add oddball contexts beyond the sounds. For instance, we've added the "spread" context to include `rotate:`
+* Add more contexts beyond the synths/fx/samples
+* Add auto-generation of syntax file with Ruby syntax extensions
