@@ -1,7 +1,7 @@
 " From app/server/ruby/lib/sonicpi/lang/core.rb
 syntax keyword rubyKeyword assert assert_equal assert_error assert_similar at
 syntax keyword rubyKeyword beat block_duration block_slept? bools bt choose
-syntax keyword rubyKeyword clear cue current_beat_duration current_bpm
+syntax keyword rubyKeyword clear comment cue current_beat_duration current_bpm
 syntax keyword rubyKeyword current_random_seed current_sched_ahead_time
 syntax keyword rubyKeyword current_time dec density dice doubles eval_file
 syntax keyword rubyKeyword factor? get halves in_thread inc knit line
@@ -19,10 +19,8 @@ syntax keyword rubyKeyword vector version vt wait with_bpm with_bpm_mul
 syntax keyword rubyKeyword with_cue_logging with_osc with_osc_logging
 syntax keyword rubyKeyword with_random_seed with_real_time
 syntax keyword rubyKeyword with_sched_ahead_time with_swing
-syntax keyword rubyDefine define defonce
+syntax keyword rubyDefine define defonce ndefine
 syntax keyword rubyRepeat live_loop loop
-syntax region rubyComment start="\<comment\>" end="\<end\>" contains=rubySpaceError,rubyTodo
-syntax region rubyComment start="\<ndefine\>" end="\<end\>" contains=rubySpaceError,rubyTodo
 
 " From app/server/ruby/lib/sonicpi/lang/sound.rb
 syntax keyword rubyKeyword all_sample_names buffer control current_arg_checks
