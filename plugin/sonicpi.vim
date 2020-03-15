@@ -53,8 +53,7 @@ let s:record_job = v:null
 " Contextual initialization modelled after tpope's vim-sonicpi
 function! sonicpi#detect()
   " Test if Sonic Pi is available.
-  silent! execute '! ' . g:sonicpi_command . ' ' . g:sonicpi_check . ' 2>&1 >/dev/null'
-  if v:shell_error == 0 && expand(&filetype) == 'ruby' && g:sonicpi_enabled
+  if s:SonicPiServerCheck() && expand(&filetype) == 'ruby' && g:sonicpi_enabled
     if g:sonicpi_keymaps_enabled
       call s:load_keymaps()
     endif
@@ -149,6 +148,11 @@ function! s:SonicPiServerStop()
   else
     call job_stop(s:server_job, "int")
   endif
+endfunction
+
+function! s:SonicPiServerCheck()
+  silent! execute '! ' . g:sonicpi_command . ' ' . g:sonicpi_check . ' 2>&1 >/dev/null'
+  return v:shell_error == 0
 endfunction
 
 function! s:SonicPiSendBuffer() range
@@ -298,6 +302,7 @@ endfunction
 " Export public API
 command! -nargs=0 SonicPiServerStart call s:SonicPiServerStart()
 command! -nargs=0 SonicPiServerStop call s:SonicPiServerStop()
+command! -nargs=0 SonicPiServerStatus if s:SonicPiServerCheck() | echo 'Sonic Pi server is running' | else | echo 'Sonic Pi server is NOT running' | endif
 command! -nargs=0 -range=% SonicPiSendBuffer let view = winsaveview() | <line1>,<line2>call s:SonicPiSendBuffer() | call winrestview(view)
 command! -nargs=0 SonicPiShowLog call s:SonicPiShowLog()
 command! -nargs=0 SonicPiCloseLog call s:SonicPiCloseLog()

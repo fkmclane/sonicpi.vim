@@ -30,6 +30,7 @@ The plugin enables itself when Sonic Pi is running and the Ruby filetype is init
 * `SonicPiCloseAll` - Close all Sonic Pi server log windows
 * `SonicPiServerStart` - Start Sonic Pi server using sonic-pi-tool (requires Neovim or Vim 8 with `job` feature)
 * `SonicPiServerStop` - Stop Sonic Pi server when managed from (Neo)Vim
+* `SonicPiServerStatus` - Check if Sonic Pi server is running
 * `SonicPiRecord <filename>` - Start a recording to `<filename>` (this will be automatically stopped and saved when stopped or when (Neo)Vim is closed) (requires Neovim or Vim 8 with `job` and `channel` features)
 * `SonicPiRecordStop` - Stop the current recording and save it to the previously specified filename
 
