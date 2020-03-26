@@ -216,13 +216,13 @@ function! s:SonicPiCloseLog()
   if bufwinnr('Sonic Pi Log') > 0
     execute bufwinnr('Sonic Pi Log') . ' wincmd c'
   endif
-  if len(win_findbuf(bufnr('Sonic Pi Log'))) <= 0
+  if bufexists('Sonic Pi Log') && len(win_findbuf(bufnr('Sonic Pi Log'))) <= 0
     execute bufnr('Sonic Pi Log') . ' bdelete!'
   endif
 endfunction
 
 function! s:SonicPiCloseAll()
-  if buflisted('Sonic Pi Log')
+  if bufexists('Sonic Pi Log')
     execute bufnr('Sonic Pi Log') . ' bdelete!'
   endif
 endfunction
