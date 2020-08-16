@@ -1,60 +1,60 @@
-if exists('g:loaded_sonicpi')
+if exists('g:loaded_sonic_pi')
   finish
 endif
-let g:loaded_sonicpi = 1
+let g:loaded_sonic_pi = 1
 
-if !exists('g:sonicpi_command')
-  let g:sonicpi_command = 'sonic-pi-tool'
+if !exists('g:sonic_pi_command')
+  let g:sonic_pi_command = 'sonic-pi-tool'
 endif
 
-if !exists('g:sonicpi_check')
-  let g:sonicpi_check = 'check'
+if !exists('g:sonic_pi_check')
+  let g:sonic_pi_check = 'check'
 endif
 
-if !exists('g:sonicpi_run')
-  let g:sonicpi_run = 'start-server'
+if !exists('g:sonic_pi_run')
+  let g:sonic_pi_run = 'start-server'
 endif
 
-if !exists('g:sonicpi_send')
-  let g:sonicpi_send = 'eval-stdin'
+if !exists('g:sonic_pi_eval')
+  let g:sonic_pi_eval = 'eval-stdin'
 endif
 
-if !exists('g:sonicpi_logs')
-  let g:sonicpi_logs = 'logs'
+if !exists('g:sonic_pi_stop')
+  let g:sonic_pi_stop = 'stop'
 endif
 
-if !exists('g:sonicpi_record')
-  let g:sonicpi_record = 'record'
+if !exists('g:sonic_pi_logs')
+  let g:sonic_pi_logs = 'logs'
 endif
 
-if !exists('g:sonicpi_stop')
-  let g:sonicpi_stop = 'stop'
+if !exists('g:sonic_pi_record')
+  let g:sonic_pi_record = 'record'
 endif
 
 if !exists('g:vim_redraw')
   let g:vim_redraw = 0
 endif
 
-if !exists('g:sonicpi_enabled')
-  let g:sonicpi_enabled = 1
+if !exists('g:sonic_pi_enabled')
+  let g:sonic_pi_enabled = 1
 endif
 
-if !exists('g:sonicpi_log_enabled')
-  let g:sonicpi_log_enabled = 1
+if !exists('g:sonic_pi_autolog_enabled')
+  let g:sonic_pi_autolog_enabled = 1
 endif
 
-if !exists('g:sonicpi_keymaps_enabled')
-  let g:sonicpi_keymaps_enabled = 1
+if !exists('g:sonic_pi_keymaps_enabled')
+  let g:sonic_pi_keymaps_enabled = 1
 endif
 
 let s:server_job = v:null
 let s:record_job = v:null
 
 " Contextual initialization modelled after tpope's vim-sonicpi
-function! sonicpi#detect()
+function! sonic_pi#detect()
   " Test if Sonic Pi is available.
-  if s:SonicPiServerCheck() && expand(&filetype) == 'ruby' && g:sonicpi_enabled
-    if g:sonicpi_keymaps_enabled
+  if s:SonicPiServerCheck() && expand(&filetype) == 'ruby' && g:sonic_pi_enabled
+    if g:sonic_pi_keymaps_enabled
       call s:load_keymaps()
     endif
     call s:load_autocomplete()
@@ -62,16 +62,16 @@ function! sonicpi#detect()
   endif
 endfunction
 
-augroup sonicpi
+augroup sonic_pi
   autocmd!
-  autocmd BufNewFile,BufReadPost *.rb call sonicpi#detect()
-  autocmd FileType               ruby call sonicpi#detect()
+  autocmd BufNewFile,BufReadPost *.rb call sonic_pi#detect()
+  autocmd FileType               ruby call sonic_pi#detect()
   autocmd ExitPre                * call s:SonicPiExit()
   " Not entirely sure this one will be helpful...
   autocmd VimEnter               * if expand('<amatch>') == '\v*.rb' | endif
 augroup END
 
-" Autocomplete functionality calls Ruby if no sonicpi directives found
+" Autocomplete functionality calls Ruby if no sonic_pi directives found
 function! s:load_autocomplete()
   if exists('&ofu')
     setlocal omnifunc=sonicpicomplete#Complete
@@ -84,16 +84,16 @@ endfunction
 
 " Extend Ruby syntax to include Sonic Pi terms
 function! s:load_syntax()
-  runtime! syntax/sonicpi.vim
+  runtime! syntax/sonic-pi.vim
 endfunction
 
-function! s:SonicPiServerExitHandler(job, data, ...)
+function! s:SonicPiHandleServerExit(job, data, ...)
   let s:server_job = v:null
 endfunction
 
-function! s:SonicPiServerStart()
-  if g:sonicpi_run == ''
-    echo "No run subcommand defined for '" . g:sonicpi_command . "'"
+function! s:SonicPiStartServer()
+  if g:sonic_pi_run == ''
+    echo "No run subcommand defined for '" . g:sonic_pi_command . "'"
     return
   endif
 
@@ -108,14 +108,14 @@ function! s:SonicPiServerStart()
   endif
 
   if has('nvim')
-    let s:server_job = jobstart([g:sonicpi_command, g:sonicpi_run], {'on_exit': function('s:SonicPiServerExitHandler')})
+    let s:server_job = jobstart([g:sonic_pi_command, g:sonic_pi_run], {'on_exit': function('s:SonicPiHandleServerExit')})
     if s:server_job <= 0
       s:server_job = v:null
       echo 'Error starting server'
       return
     endif
   else
-    let s:server_job = job_start([g:sonicpi_command, g:sonicpi_run], {'in_io': 'null', 'out_io': 'null', 'err_io': 'null', 'exit_cb': function('s:SonicPiRecordExitHandler')})
+    let s:server_job = job_start([g:sonic_pi_command, g:sonic_pi_run], {'in_io': 'null', 'out_io': 'null', 'err_io': 'null', 'exit_cb': function('s:SonicPiHandleServerExit')})
     if job_status(s:server_job) != "run"
       s:server_job = v:null
       echo 'Error starting server'
@@ -125,14 +125,14 @@ function! s:SonicPiServerStart()
 
   sleep 7
 
-  call sonicpi#detect()
+  call sonic_pi#detect()
 
   if g:vim_redraw
     execute 'redraw!'
   endif
 endfunction
 
-function! s:SonicPiServerStop()
+function! s:SonicPiStopServer()
   if !has('nvim') && !(has('job') && has('channel'))
     echo 'Job control not available'
     return
@@ -150,18 +150,25 @@ function! s:SonicPiServerStop()
   endif
 endfunction
 
-function! s:SonicPiServerCheck()
-  silent! execute '! ' . g:sonicpi_command . ' ' . g:sonicpi_check . ' 2>&1 >/dev/null'
+function! s:SonicPiCheckServer()
+  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_check . ' 2>&1 >/dev/null'
   return v:shell_error == 0
 endfunction
 
-function! s:SonicPiSendBuffer() range
-  silent! execute a:firstline . ',' . a:lastline . ' w ! ' . g:sonicpi_command . ' ' . g:sonicpi_send . ' 2>&1 >/dev/null'
+function! s:SonicPiEval() range
+  silent! execute a:firstline . ',' . a:lastline . ' w ! ' . g:sonic_pi_command . ' ' . g:sonic_pi_eval . ' 2>&1 >/dev/null'
+endfunction
+
+function! s:SonicPiStop()
+  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_stop . ' 2>&1 >/dev/null'
+  if g:vim_redraw
+    execute 'redraw!'
+  endif
 endfunction
 
 function! s:SonicPiShowLog()
-  if g:sonicpi_logs == ''
-    echo "No logs subcommand defined for '" . g:sonicpi_command . "'"
+  if g:sonic_pi_logs == ''
+    echo "No logs subcommand defined for '" . g:sonic_pi_command . "'"
     return
   endif
 
@@ -201,7 +208,7 @@ function! s:SonicPiShowLog()
     let term = 'terminal ++curwin'
   endif
 
-  execute term . ' ' . g:sonicpi_command . ' ' . g:sonicpi_logs
+  execute term . ' ' . g:sonic_pi_command . ' ' . g:sonic_pi_logs
 
   setlocal nonumber
 
@@ -227,13 +234,13 @@ function! s:SonicPiCloseAll()
   endif
 endfunction
 
-function! s:SonicPiRecordExitHandler(job, data, ...)
+function! s:SonicPiHandleRecordingExit(job, data, ...)
   let s:record_job = v:null
 endfunction
 
-function! s:SonicPiRecord(fname)
-  if g:sonicpi_record == ''
-    echo "No record subcommand defined for '" . g:sonicpi_command . "'"
+function! s:SonicPiStartRecording(fname)
+  if g:sonic_pi_record == ''
+    echo "No record subcommand defined for '" . g:sonic_pi_command . "'"
     return
   endif
 
@@ -250,14 +257,14 @@ function! s:SonicPiRecord(fname)
   let fname = fnamemodify(expand(a:fname), ':p')
 
   if has('nvim')
-    let s:record_job = jobstart([g:sonicpi_command, g:sonicpi_record, fname], {'on_exit': function('s:SonicPiRecordExitHandler')})
+    let s:record_job = jobstart([g:sonic_pi_command, g:sonic_pi_record, fname], {'on_exit': function('s:SonicPiHandleRecordingExit')})
     if s:record_job <= 0
       s:record_job = v:null
       echo 'Error starting recording session'
       return
     endif
   else
-    let s:record_job = job_start([g:sonicpi_command, g:sonicpi_record, fname], {'exit_cb': function('s:SonicPiRecordExitHandler')})
+    let s:record_job = job_start([g:sonic_pi_command, g:sonic_pi_record, fname], {'exit_cb': function('s:SonicPiHandleRecordingExit')})
     if job_status(s:record_job) != "run"
       s:record_job = v:null
       echo 'Error starting recording session'
@@ -266,7 +273,7 @@ function! s:SonicPiRecord(fname)
   endif
 endfunction
 
-function! s:SonicPiRecordStop()
+function! s:SonicPiStopRecording()
   if !has('nvim') && !(has('job') && has('channel'))
     echo 'Job control not available'
     return
@@ -285,41 +292,34 @@ function! s:SonicPiRecordStop()
   endif
 endfunction
 
-function! s:SonicPiStop()
-  silent! execute '! ' . g:sonicpi_command . ' ' . g:sonicpi_stop . ' 2>&1 >/dev/null'
-  if g:vim_redraw
-    execute 'redraw!'
-  endif
-endfunction
-
 function! s:SonicPiExit()
   call s:SonicPiCloseAll()
   if s:record_job != v:null
-    call s:SonicPiRecordStop()
+    call s:SonicPiStopRecording()
   endif
 endfunction
 
 " Export public API
-command! -nargs=0 SonicPiServerStart call s:SonicPiServerStart()
-command! -nargs=0 SonicPiServerStop call s:SonicPiServerStop()
-command! -nargs=0 SonicPiServerStatus if s:SonicPiServerCheck() | echo 'Sonic Pi server is running' | else | echo 'Sonic Pi server is NOT running' | endif
-command! -nargs=0 -range=% SonicPiSendBuffer let view = winsaveview() | <line1>,<line2>call s:SonicPiSendBuffer() | call winrestview(view)
+command! -nargs=0 SonicPiStartServer call s:SonicPiStartServer()
+command! -nargs=0 SonicPiStopServer call s:SonicPiStopServer()
+command! -nargs=0 SonicPiCheckServer if s:SonicPiCheckServer() | echo 'Sonic Pi server is running' | else | echo 'Sonic Pi server is NOT running' | endif
+command! -nargs=0 -range=% SonicPiEval let view = winsaveview() | <line1>,<line2>call s:SonicPiEval() | call winrestview(view)
+command! -nargs=0 SonicPiStop call s:SonicPiStop()
 command! -nargs=0 SonicPiShowLog call s:SonicPiShowLog()
 command! -nargs=0 SonicPiCloseLog call s:SonicPiCloseLog()
 command! -nargs=0 SonicPiCloseAll call s:SonicPiCloseAll()
-command! -nargs=1 -complete=file SonicPiRecord call s:SonicPiRecord(<f-args>)
-command! -nargs=0 SonicPiRecordStop call s:SonicPiRecordStop()
-command! -nargs=0 SonicPiStop call s:SonicPiStop()
+command! -nargs=1 -complete=file SonicPiStartRecording call s:SonicPiStartRecording(<f-args>)
+command! -nargs=0 SonicPiStopRecording call s:SonicPiStopRecording()
 
 " Set keymaps in Normal mode
 function! s:load_keymaps()
-  if g:sonicpi_logs != '' && (has('nvim') || has('terminal')) && g:sonicpi_log_enabled
-    nnoremap <leader>r :SonicPiShowLog<CR>:SonicPiSendBuffer<CR>
-    vnoremap <leader>r :<C-U>SonicPiShowLog<CR>:'<,'>SonicPiSendBuffer<CR>
+  if g:sonic_pi_logs != '' && (has('nvim') || has('terminal')) && g:sonic_pi_autolog_enabled
+    nnoremap <leader>r :SonicPiShowLog<CR>:SonicPiEval<CR>
+    vnoremap <leader>r :<C-U>SonicPiShowLog<CR>:'<,'>SonicPiEval<CR>
     nnoremap <leader>c :SonicPiCloseLog<CR>
   else
-    nnoremap <leader>r :SonicPiSendBuffer<CR>
-    vnoremap <leader>r :SonicPiSendBuffer<CR>
+    nnoremap <leader>r :SonicPiEval<CR>
+    vnoremap <leader>r :SonicPiEval<CR>
   endif
   nnoremap <leader>S :SonicPiStop<CR>
 endfunction
