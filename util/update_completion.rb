@@ -119,6 +119,7 @@ File.open(File.join(File.dirname(__FILE__), '../autoload/sonicpicomplete.vim'), 
   f.puts '    # The directives'
   f.print '    @directives = '
   f.puts SonicPi::Lang::Core.docs.keys.map { |s| s.to_s }.to_s
+  f.puts ''
 
   f.puts '    # The contexts'
   f.puts '    @context = {}'
@@ -127,7 +128,7 @@ File.open(File.join(File.dirname(__FILE__), '../autoload/sonicpicomplete.vim'), 
   f.puts '    # The synths'
   f.puts '    @synths = []'
   SonicPi::Synths::SynthInfo.all_synths.each do |synth|
-    f.puts "    @synths += ':#{synth.to_s}'"
+    f.puts "    @synths << ':#{synth.to_s}'"
     f.print "    @context['#{synth.to_s}'] = "
     args = SonicPi::Synths::SynthInfo.get_info(synth).arg_defaults
     args.select { |k,v| v.is_a? Symbol }
@@ -142,7 +143,7 @@ File.open(File.join(File.dirname(__FILE__), '../autoload/sonicpicomplete.vim'), 
   f.puts '    # The FX'
   f.puts '    @fx = []'
   SonicPi::Synths::FXInfo.all_fx.each do |fx|
-    f.puts "    @fx += ':#{fx.to_s}'"
+    f.puts "    @fx << ':#{fx.to_s}'"
     f.print "    @context['fx_#{fx.to_s}'] = "
     args = SonicPi::Synths::FXInfo.get_info("fx_#{fx.to_s}").arg_defaults
     args.select { |k,v| v.is_a? Symbol }
@@ -168,6 +169,8 @@ File.open(File.join(File.dirname(__FILE__), '../autoload/sonicpicomplete.vim'), 
   f.puts ''
 
   f.puts <<~'vim'
+      end
+
       def return_to_vim(completions)
         list = array2list(completions)
         VIM::command('call extend(g:sonicpicomplete_completions, [%s])' % list)

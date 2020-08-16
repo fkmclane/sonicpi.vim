@@ -1,7 +1,7 @@
-if exists('g:loaded_sonic_pi')
+if exists('g:loaded_sonicpi')
   finish
 endif
-let g:loaded_sonic_pi = 1
+let g:loaded_sonicpi = 1
 
 if !exists('g:sonic_pi_command')
   let g:sonic_pi_command = 'sonic-pi-tool'
@@ -51,9 +51,9 @@ let s:server_job = v:null
 let s:record_job = v:null
 
 " Contextual initialization modelled after tpope's vim-sonicpi
-function! sonic_pi#detect()
+function! sonicpi#detect()
   " Test if Sonic Pi is available.
-  if s:SonicPiServerCheck() && expand(&filetype) == 'ruby' && g:sonic_pi_enabled
+  if s:SonicPiCheckServer() && expand(&filetype) == 'ruby' && g:sonic_pi_enabled
     if g:sonic_pi_keymaps_enabled
       call s:load_keymaps()
     endif
@@ -62,10 +62,10 @@ function! sonic_pi#detect()
   endif
 endfunction
 
-augroup sonic_pi
+augroup sonicpi
   autocmd!
-  autocmd BufNewFile,BufReadPost *.rb call sonic_pi#detect()
-  autocmd FileType               ruby call sonic_pi#detect()
+  autocmd BufNewFile,BufReadPost *.rb call sonicpi#detect()
+  autocmd FileType               ruby call sonicpi#detect()
   autocmd ExitPre                * call s:SonicPiExit()
   " Not entirely sure this one will be helpful...
   autocmd VimEnter               * if expand('<amatch>') == '\v*.rb' | endif
@@ -84,7 +84,7 @@ endfunction
 
 " Extend Ruby syntax to include Sonic Pi terms
 function! s:load_syntax()
-  runtime! syntax/sonic-pi.vim
+  runtime! syntax/sonicpi.vim
 endfunction
 
 function! s:SonicPiHandleServerExit(job, data, ...)
@@ -125,7 +125,7 @@ function! s:SonicPiStartServer()
 
   sleep 7
 
-  call sonic_pi#detect()
+  call sonicpi#detect()
 
   if g:vim_redraw
     execute 'redraw!'
