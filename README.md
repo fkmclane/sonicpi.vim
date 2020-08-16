@@ -37,7 +37,7 @@ The plugin enables itself when Sonic Pi is running and the Ruby filetype is init
 
 ## Installation
 
-Prerequisites: [Sonic Pi 2.4+](http://www.sonic-pi.net/) and [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool/) or similar.
+Prerequisites: [Sonic Pi](http://www.sonic-pi.net/) and [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool/) or similar.
 
 * [vim-plug](https://github.com/junegunn/vim-plug)
   * `Plug 'lilyinstarlight/vim-sonic-pi'`
