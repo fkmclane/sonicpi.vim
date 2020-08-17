@@ -81,8 +81,8 @@ let g:sonic_pi_record = ''
 
 ## Sonic Pi Interfacing Tools
 
-* [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool) (version by @emlyn) - Written in Python and supports all of the functionality of vim-sonic-pi. This is the preferred tool since it works best with recent Sonic Pi versions and has a few extra handy features that may be incorporated into vim-sonic-pi in the future.
-* [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool) (version by @lpil) - Written in Rust and supports all of the functionality of vim-sonic-pi.
+* [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool) (version by [@emlyn](https://github.com/emlyn)) - Written in Python and supports all of the functionality of vim-sonic-pi. This is the preferred tool since it works best with recent Sonic Pi versions and has a few extra handy features that may be incorporated into vim-sonic-pi in the future.
+* [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool) (version by [@lpil](https://github.com/lpil)) - Written in Rust and supports all of the functionality of vim-sonic-pi.
 * [sonic-pi-cli](https://github.com/Widdershin/sonic-pi-cli) - Written in Ruby but does not support showing the log, starting a standalone server from (Neo)Vim, or initiating recordings.
 
 
@@ -94,4 +94,4 @@ let g:sonic_pi_record = ''
 
 ## Thanks
 
-Many thanks to @dermusikman for the sonicpi.vim plugin on which this is based and also to @samaaron and the whole Sonic Pi community for such an awesome platform!
+Many thanks to [@dermusikman](https://github.com/dermusikman) for the sonicpi.vim plugin on which this is based and also to [@samaaron](https://github.com/samaaron) and the whole Sonic Pi community for such an awesome platform!
