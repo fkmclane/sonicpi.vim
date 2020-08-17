@@ -2,8 +2,8 @@
 
 The Sonic Pi (Neo)Vim plugin requires the following:
 
-* An installation of [Sonic Pi](http://www.sonic-pi.net/) (currently tested against 3.2.2).
-* A tool to interface with Sonic Pi. The default is [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool).
+* An installation of [Sonic Pi](http://www.sonic-pi.net/) (currently tested against 3.2.2)
+* A tool to interface with Sonic Pi. The default is [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool)
 
 Either Neovim or Vim 8.1+ is required for log, built-in server, and recording support but older versions of Vim should gracefully fallback to basic functionality.
 
@@ -79,14 +79,19 @@ let g:sonic_pi_record = ''
 ```
 
 
-## Sonic Pi interfacing tools
+## Sonic Pi Interfacing Tools
 
 * [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool) (version by @emlyn) - Written in Python and supports all of the functionality of vim-sonic-pi. This is the preferred tool since it works best with recent Sonic Pi versions and has a few extra handy features that may be incorporated into vim-sonic-pi in the future.
 * [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool) (version by @lpil) - Written in Rust and supports all of the functionality of vim-sonic-pi.
 * [sonic-pi-cli](https://github.com/Widdershin/sonic-pi-cli) - Written in Ruby but does not support showing the log, starting a standalone server from (Neo)Vim, or initiating recordings.
 
 
-## TODO
+## To-Do
 
 * Add named notes (e.g., `:c4`, `:e2`) and chords (e.g., `sus4`, `m7+5`)
 * Add more contexts beyond the synths/fx/samples
+
+
+## Thanks
+
+Many thanks to @dermusikman for the sonicpi.vim plugin on which this is based and also to @samaaron and the whole Sonic Pi community for such an awesome platform!
