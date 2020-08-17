@@ -50,7 +50,7 @@ endif
 let s:server_job = v:null
 let s:record_job = v:null
 
-" Contextual initialization modelled after tpope's vim-sonicpi
+" Contextual initialization
 function! sonicpi#detect()
   " Test if Sonic Pi is available.
   if s:SonicPiCheckServer() && expand(&filetype) == 'ruby' && g:sonic_pi_enabled
@@ -71,7 +71,7 @@ augroup sonicpi
   autocmd VimEnter               * if expand('<amatch>') == '\v*.rb' | endif
 augroup END
 
-" Autocomplete functionality calls Ruby if no sonic_pi directives found
+" Autocomplete functionality calls Ruby if no Sonic Pi directives found
 function! s:load_autocomplete()
   if exists('&ofu')
     setlocal omnifunc=sonicpicomplete#Complete
