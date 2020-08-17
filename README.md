@@ -3,7 +3,7 @@
 The Sonic Pi (Neo)Vim plugin requires the following:
 
 * An installation of [Sonic Pi](http://www.sonic-pi.net/) (currently tested against 3.2.2).
-* A tool to interface with Sonic Pi. The default is [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool/).
+* A tool to interface with Sonic Pi. The default is [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool).
 
 Either Neovim or Vim 8.1+ is required for log, built-in server, and recording support but older versions of Vim should gracefully fallback to basic functionality.
 
@@ -37,7 +37,7 @@ The plugin enables itself when Sonic Pi is running and the Ruby filetype is init
 
 ## Installation
 
-Prerequisites: [Sonic Pi](http://www.sonic-pi.net/) and [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool/) or similar.
+Prerequisites: [Sonic Pi](http://www.sonic-pi.net/) and [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool) or similar.
 
 * [vim-plug](https://github.com/junegunn/vim-plug)
   * `Plug 'lilyinstarlight/vim-sonic-pi'`
@@ -65,7 +65,7 @@ Whenever Sonic Pi is running and you haven't disabled the `g:sonic_pi_enabled` f
 * `g:sonic_pi_autolog_enabled` - Whether automatic log popouts are enabled (default: 1)
 * `g:sonic_pi_keymaps_enabled` - Whether default keybindings are enabled (default: 1)
 
-As an example, to use [`sonic-pi-cli`](https://github.com/Widdershin/sonic-pi-cli/) the following `.vimrc` or `init.vim` settings would work:
+As an example, to use [`sonic-pi-cli`](https://github.com/Widdershin/sonic-pi-cli) the following `.vimrc` or `init.vim` settings would work:
 
 ```vim
 let g:sonic_pi_command = 'sonic_pi'
@@ -81,8 +81,9 @@ let g:sonic_pi_record = ''
 
 ## Sonic Pi interfacing tools
 
-* [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool/). Written in Rust and supports all of the functionality of vim-sonic-pi.
-* [sonic-pi-cli](https://github.com/Widdershin/sonic-pi-cli/). Written in Ruby but does not support showing the log, starting a standalone server from (Neo)Vim, or initiating recordings.
+* [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool) (version by @emlyn) - Written in Python and supports all of the functionality of vim-sonic-pi. This is the preferred tool since it works best with recent Sonic Pi versions and has a few extra handy features that may be incorporated into vim-sonic-pi in the future.
+* [sonic-pi-tool](https://github.com/lilyinstarlight/sonic-pi-tool) (version by @lpil) - Written in Rust and supports all of the functionality of vim-sonic-pi.
+* [sonic-pi-cli](https://github.com/Widdershin/sonic-pi-cli) - Written in Ruby but does not support showing the log, starting a standalone server from (Neo)Vim, or initiating recordings.
 
 
 ## TODO
