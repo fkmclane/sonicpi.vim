@@ -88,7 +88,6 @@ let g:sonic_pi_record = ''
 
 ## To-Do
 
-* Add named notes (e.g., `:c4`, `:e2`) and chords (e.g., `sus4`, `m7+5`)
 * Add more contexts beyond the synths/fx/samples
 
 

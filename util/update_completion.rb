@@ -27,6 +27,26 @@ File.open(File.join(File.dirname(__FILE__), '../syntax/sonicpi.vim'), 'w') do |f
   SonicPi::Lang::Core.docs.keys.map { |s| s.to_s }.each do |keyword|
     f.puts "syntax keyword #{highlight_group[keyword]} #{keyword}"
   end
+
+  f.puts ''
+
+  SonicPi::Chord::CHORD.keys.each do |c|
+    if c.is_a? Symbol
+      f.puts "syntax match rubyPredefinedConstant '[]})\"\\':]\\@1<!:#{c.to_s}\\>'"
+    else
+      f.puts "syntax match rubyPredefinedConstant '[]})\"\\':]\\@1<!:\\'#{c}\\''"
+    end
+  end
+
+  f.puts ''
+
+  [:r, :rest].each do |r|
+    f.puts "syntax match rubyPredefinedConstant '[]})\"\\':]\\@1<!:#{r.to_s}\\>'"
+  end
+
+  SonicPi::Note::NOTES_TO_INTERVALS.keys.each do |pc|
+    f.puts "syntax match rubyPredefinedConstant '[]})\"\\':]\\@1<!:#{pc.to_s}[0-8]\\?\\>'"
+  end
 end
 
 File.open(File.join(File.dirname(__FILE__), '../autoload/sonicpicomplete.vim'), 'w') do |f|
