@@ -26,7 +26,7 @@ The plugin enables itself when Sonic Pi is running and the Ruby filetype is init
 * `SonicPiEval` - Send current buffer or selection to Sonic Pi
 * `SonicPiStop` - Send Sonic Pi the stop signal
 * `SonicPiShowLog` - Pop out the Sonic Pi server log on the right side of the tab page (requires either Neovim or Vim 8 with `terminal` feature)
-* `SonicPiCloseLog` - Close the Sonic Pi server log on the current tag page
+* `SonicPiCloseLog` - Close the Sonic Pi server log on the current tab page
 * `SonicPiCloseAll` - Close all Sonic Pi server log windows
 * `SonicPiStartServer` - Start Sonic Pi server using sonic-pi-tool (requires Neovim or Vim 8 with `job` feature)
 * `SonicPiStopServer` - Stop Sonic Pi server when managed from (Neo)Vim
