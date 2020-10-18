@@ -151,16 +151,16 @@ function! s:SonicPiStopServer()
 endfunction
 
 function! s:SonicPiCheckServer()
-  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_check . ' 2>&1 >/dev/null'
+  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_check . ' >/dev/null 2>&1'
   return v:shell_error == 0
 endfunction
 
 function! s:SonicPiEval() range
-  silent! execute a:firstline . ',' . a:lastline . ' w ! ' . g:sonic_pi_command . ' ' . g:sonic_pi_eval . ' 2>&1 >/dev/null'
+  silent! execute a:firstline . ',' . a:lastline . ' w ! ' . g:sonic_pi_command . ' ' . g:sonic_pi_eval . ' >/dev/null 2>&1'
 endfunction
 
 function! s:SonicPiStop()
-  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_stop . ' 2>&1 >/dev/null'
+  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_stop . ' >/dev/null 2>&1'
   if g:vim_redraw
     execute 'redraw!'
   endif
