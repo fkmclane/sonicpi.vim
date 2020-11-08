@@ -1,6 +1,8 @@
 #!/bin/bash -e
 
-if [ -e '/Applications/Sonic Pi.app/Contents/Resources/app/server/native/ruby/bin/ruby' ]; then
+if [ -n "$1" ]; then
+	sonic_pi_app_path="$1"
+elif [ -e '/Applications/Sonic Pi.app/Contents/Resources/app/server/native/ruby/bin/ruby' ]; then
 	sonic_pi_app_path='/Applications/Sonic Pi.app/Contents/Resources/app'
 elif [ -e '/opt/sonic-pi/app/server/native/ruby/bin/ruby' ]; then
 	sonic_pi_app_path='/opt/sonic-pi/app'
