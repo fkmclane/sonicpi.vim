@@ -157,6 +157,11 @@ endfunction
 
 function! s:SonicPiEval() range
   silent! execute a:firstline . ',' . a:lastline . ' w ! ' . g:sonic_pi_command . ' ' . g:sonic_pi_eval . ' >/dev/null 2>&1'
+  if v:shell_error
+    echo 'Eval command failed'
+    echo "If the file is too large, try using 'run_file' from another buffer"
+    return
+  endif
 endfunction
 
 function! s:SonicPiStop()
