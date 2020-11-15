@@ -31,10 +31,6 @@ if !exists('g:sonic_pi_record')
   let g:sonic_pi_record = 'record'
 endif
 
-if !exists('g:vim_redraw')
-  let g:vim_redraw = 0
-endif
-
 if !exists('g:sonic_pi_enabled')
   let g:sonic_pi_enabled = 1
 endif
@@ -53,7 +49,7 @@ let s:record_job = v:null
 " Contextual initialization
 function! sonicpi#detect()
   " Test if Sonic Pi is available.
-  if s:SonicPiCheckServer() && expand(&filetype) == 'ruby' && g:sonic_pi_enabled
+  if s:check_server() && expand(&filetype) == 'ruby' && g:sonic_pi_enabled
     if g:sonic_pi_keymaps_enabled
       call s:load_keymaps()
     endif
@@ -66,7 +62,7 @@ augroup sonicpi
   autocmd!
   autocmd BufNewFile,BufReadPost *.rb call sonicpi#detect()
   autocmd FileType               ruby call sonicpi#detect()
-  autocmd ExitPre                * call s:SonicPiExit()
+  autocmd ExitPre                * call s:exit()
   " Not entirely sure this one will be helpful...
   autocmd VimEnter               * if expand('<amatch>') == '\v*.rb' | endif
 augroup END
@@ -87,11 +83,11 @@ function! s:load_syntax()
   runtime! syntax/sonicpi.vim
 endfunction
 
-function! s:SonicPiHandleServerExit(job, data, ...)
+function! s:handle_server_exit(job, data, ...)
   let s:server_job = v:null
 endfunction
 
-function! s:SonicPiStartServer()
+function! s:start_server()
   if g:sonic_pi_run == ''
     echo "No run subcommand defined for '" . g:sonic_pi_command . "'"
     return
@@ -103,60 +99,72 @@ function! s:SonicPiStartServer()
   endif
 
   if s:server_job != v:null
-    echo 'A server is already running'
+    echo 'A server is already running in this session'
+    return
+  endif
+
+  if s:check_server()
+    echo 'A server is already running in another session'
     return
   endif
 
   if has('nvim')
-    let s:server_job = jobstart([g:sonic_pi_command, g:sonic_pi_run], {'on_exit': function('s:SonicPiHandleServerExit')})
-    if s:server_job <= 0
+    let s:server_job = jobstart([g:sonic_pi_command, g:sonic_pi_run], {'on_exit': function('s:handle_server_exit')})
+    if s:server_job <= 0 || jobwait([s:server_job], 0)[0] != -1
       s:server_job = v:null
       echo 'Error starting server'
       return
     endif
   else
-    let s:server_job = job_start([g:sonic_pi_command, g:sonic_pi_run], {'in_io': 'null', 'out_io': 'null', 'err_io': 'null', 'exit_cb': function('s:SonicPiHandleServerExit')})
-    if job_status(s:server_job) != "run"
+    let s:server_job = job_start([g:sonic_pi_command, g:sonic_pi_run], {'in_io': 'null', 'out_io': 'null', 'err_io': 'null', 'exit_cb': function('s:handle_server_exit')})
+    if job_status(s:server_job) != 'run'
       s:server_job = v:null
       echo 'Error starting server'
       return
     endif
   endif
 
-  sleep 7
+  let time = 0.0
+  while time < 10.0 && s:server_job != v:null && !s:check_server()
+    sleep 1
+    let time += 1.0
+  endwhile
 
   call sonicpi#detect()
 
-  if g:vim_redraw
-    execute 'redraw!'
+  if !s:check_server()
+    echo 'Server failed to start'
+    return
   endif
+
+  echo 'Server successfully started'
 endfunction
 
-function! s:SonicPiStopServer()
+function! s:stop_server()
   if !has('nvim') && !(has('job') && has('channel'))
     echo 'Job control not available'
     return
   endif
 
   if s:server_job == v:null
-    echo 'There is no running server'
+    echo 'There is no running server in this session'
     return
   endif
 
   if has('nvim')
     call jobstop(s:server_job)
   else
-    call job_stop(s:server_job, "int")
+    call job_stop(s:server_job, 'int')
   endif
 endfunction
 
-function! s:SonicPiCheckServer()
-  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_check . ' >/dev/null 2>&1'
+function! s:check_server()
+  call system(g:sonic_pi_command . ' ' . g:sonic_pi_check . ' >/dev/null 2>&1')
   return v:shell_error == 0
 endfunction
 
-function! s:SonicPiEval() range
-  silent! execute a:firstline . ',' . a:lastline . ' w ! ' . g:sonic_pi_command . ' ' . g:sonic_pi_eval . ' >/dev/null 2>&1'
+function! s:eval() range
+  call system(g:sonic_pi_command . ' ' . g:sonic_pi_eval . ' >/dev/null 2>&1', join(getline(a:firstline, a:lastline), "\n"))
   if v:shell_error
     echo 'Eval command failed'
     echo "If the file is too large, try using 'run_file' from another buffer"
@@ -164,14 +172,11 @@ function! s:SonicPiEval() range
   endif
 endfunction
 
-function! s:SonicPiStop()
-  silent! execute '! ' . g:sonic_pi_command . ' ' . g:sonic_pi_stop . ' >/dev/null 2>&1'
-  if g:vim_redraw
-    execute 'redraw!'
-  endif
+function! s:stop()
+  call system(g:sonic_pi_command . ' ' . g:sonic_pi_stop . ' >/dev/null 2>&1')
 endfunction
 
-function! s:SonicPiShowLog()
+function! s:show_log()
   if g:sonic_pi_logs == ''
     echo "No logs subcommand defined for '" . g:sonic_pi_command . "'"
     return
@@ -224,26 +229,26 @@ function! s:SonicPiShowLog()
   execute cur . ' wincmd w'
 endfunction
 
-function! s:SonicPiCloseLog()
+function! s:close_log()
   if bufwinnr('Sonic Pi Log') > 0
-    execute bufwinnr('Sonic Pi Log') . ' wincmd c'
+    execute bufwinnr('Sonic Pi Log') . ' close!'
   endif
-  if bufexists('Sonic Pi Log') && len(win_findbuf(bufnr('Sonic Pi Log'))) <= 0
+  if bufloaded('Sonic Pi Log') && len(win_findbuf(bufnr('Sonic Pi Log'))) <= 0
     execute bufnr('Sonic Pi Log') . ' bdelete!'
   endif
 endfunction
 
-function! s:SonicPiCloseAll()
-  if bufexists('Sonic Pi Log')
+function! s:close_all()
+  if bufloaded('Sonic Pi Log')
     execute bufnr('Sonic Pi Log') . ' bdelete!'
   endif
 endfunction
 
-function! s:SonicPiHandleRecordingExit(job, data, ...)
+function! s:handle_recording_exit(job, data, ...)
   let s:record_job = v:null
 endfunction
 
-function! s:SonicPiStartRecording(fname)
+function! s:start_recording(fname)
   if g:sonic_pi_record == ''
     echo "No record subcommand defined for '" . g:sonic_pi_command . "'"
     return
@@ -262,15 +267,15 @@ function! s:SonicPiStartRecording(fname)
   let fname = fnamemodify(expand(a:fname), ':p')
 
   if has('nvim')
-    let s:record_job = jobstart([g:sonic_pi_command, g:sonic_pi_record, fname], {'on_exit': function('s:SonicPiHandleRecordingExit')})
-    if s:record_job <= 0
+    let s:record_job = jobstart([g:sonic_pi_command, g:sonic_pi_record, fname], {'on_exit': function('s:handle_recording_exit')})
+    if s:record_job <= 0 || jobwait([s:record_job], 0)[0] != -1
       s:record_job = v:null
       echo 'Error starting recording session'
       return
     endif
   else
-    let s:record_job = job_start([g:sonic_pi_command, g:sonic_pi_record, fname], {'exit_cb': function('s:SonicPiHandleRecordingExit')})
-    if job_status(s:record_job) != "run"
+    let s:record_job = job_start([g:sonic_pi_command, g:sonic_pi_record, fname], {'exit_cb': function('s:handle_recording_exit')})
+    if job_status(s:record_job) != 'run'
       s:record_job = v:null
       echo 'Error starting recording session'
       return
@@ -278,7 +283,7 @@ function! s:SonicPiStartRecording(fname)
   endif
 endfunction
 
-function! s:SonicPiStopRecording()
+function! s:stop_recording()
   if !has('nvim') && !(has('job') && has('channel'))
     echo 'Job control not available'
     return
@@ -297,24 +302,24 @@ function! s:SonicPiStopRecording()
   endif
 endfunction
 
-function! s:SonicPiExit()
-  call s:SonicPiCloseAll()
+function! s:exit()
+  call s:close_all()
   if s:record_job != v:null
-    call s:SonicPiStopRecording()
+    call s:stop_recording()
   endif
 endfunction
 
 " Export public API
-command! -nargs=0 SonicPiStartServer call s:SonicPiStartServer()
-command! -nargs=0 SonicPiStopServer call s:SonicPiStopServer()
-command! -nargs=0 SonicPiCheckServer if s:SonicPiCheckServer() | echo 'Sonic Pi server is running' | else | echo 'Sonic Pi server is NOT running' | endif
-command! -nargs=0 -range=% SonicPiEval let view = winsaveview() | <line1>,<line2>call s:SonicPiEval() | call winrestview(view)
-command! -nargs=0 SonicPiStop call s:SonicPiStop()
-command! -nargs=0 SonicPiShowLog call s:SonicPiShowLog()
-command! -nargs=0 SonicPiCloseLog call s:SonicPiCloseLog()
-command! -nargs=0 SonicPiCloseAll call s:SonicPiCloseAll()
-command! -nargs=1 -complete=file SonicPiStartRecording call s:SonicPiStartRecording(<f-args>)
-command! -nargs=0 SonicPiStopRecording call s:SonicPiStopRecording()
+command! -nargs=0 SonicPiStartServer call s:start_server()
+command! -nargs=0 SonicPiStopServer call s:stop_server()
+command! -nargs=0 SonicPiCheckServer if s:check_server() | echo 'Sonic Pi server is running' | else | echo 'Sonic Pi server is NOT running' | endif
+command! -nargs=0 -range=% SonicPiEval let view = winsaveview() | <line1>,<line2>call s:eval() | call winrestview(view)
+command! -nargs=0 SonicPiStop call s:stop()
+command! -nargs=0 SonicPiShowLog call s:show_log()
+command! -nargs=0 SonicPiCloseLog call s:close_log()
+command! -nargs=0 SonicPiCloseAll call s:close_all()
+command! -nargs=1 -complete=file SonicPiStartRecording call s:start_recording(<f-args>)
+command! -nargs=0 SonicPiStopRecording call s:stop_recording()
 
 " Set keymaps in Normal mode
 function! s:load_keymaps()

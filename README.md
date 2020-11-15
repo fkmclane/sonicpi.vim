@@ -60,7 +60,6 @@ Whenever Sonic Pi is running and you haven't disabled the `g:sonic_pi_enabled` f
 * `g:sonic_pi_stop` - Subcommand to use to give Sonic Pi the stop command (default: 'stop')
 * `g:sonic_pi_logs` - Subcommand to use for following log output (default: 'logs')
 * `g:sonic_pi_record` - Subcommand to use for starting a recording (must accept `filename` as the only parameter) (default: 'record')
-* `g:vim_redraw` - Whether to redraw after sending stop command or when activating the plugin after load (default: 0)
 * `g:sonic_pi_enabled` - Whether vim-sonic-pi is enabled (default: 1)
 * `g:sonic_pi_autolog_enabled` - Whether automatic log popouts are enabled (default: 1)
 * `g:sonic_pi_keymaps_enabled` - Whether default keybindings are enabled (default: 1)
@@ -88,6 +87,7 @@ let g:sonic_pi_record = ''
 
 ## To-Do
 
+* Disable autolog if something is already listening on the logs port (e.g. the GUI is up)
 * Add more contexts beyond the synths/fx/samples
 
 
