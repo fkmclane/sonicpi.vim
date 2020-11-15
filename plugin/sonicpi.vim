@@ -124,6 +124,8 @@ function! s:start_server()
     endif
   endif
 
+  echo 'Waiting...'
+
   let time = 0.0
   while time < 10.0 && s:server_job != v:null && !s:check_server()
     sleep 1
@@ -137,6 +139,7 @@ function! s:start_server()
     return
   endif
 
+  redraw
   echo 'Server successfully started'
 endfunction
 
@@ -156,6 +159,8 @@ function! s:stop_server()
   else
     call job_stop(s:server_job, 'int')
   endif
+
+  echo 'Server successfully stopped'
 endfunction
 
 function! s:check_server()
@@ -310,14 +315,14 @@ function! s:exit()
 endfunction
 
 " Export public API
-command! -nargs=0 SonicPiStartServer call s:start_server()
-command! -nargs=0 SonicPiStopServer call s:stop_server()
-command! -nargs=0 SonicPiCheckServer if s:check_server() | echo 'Sonic Pi server is running' | else | echo 'Sonic Pi server is NOT running' | endif
 command! -nargs=0 -range=% SonicPiEval let view = winsaveview() | <line1>,<line2>call s:eval() | call winrestview(view)
 command! -nargs=0 SonicPiStop call s:stop()
 command! -nargs=0 SonicPiShowLog call s:show_log()
 command! -nargs=0 SonicPiCloseLog call s:close_log()
 command! -nargs=0 SonicPiCloseAll call s:close_all()
+command! -nargs=0 SonicPiStartServer call s:start_server()
+command! -nargs=0 SonicPiStopServer call s:stop_server()
+command! -nargs=0 SonicPiCheckServer if s:check_server() | echo 'Sonic Pi server is running' | else | echo 'Sonic Pi server is NOT running' | endif
 command! -nargs=1 -complete=file SonicPiStartRecording call s:start_recording(<f-args>)
 command! -nargs=0 SonicPiStopRecording call s:stop_recording()
 
