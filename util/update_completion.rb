@@ -25,7 +25,11 @@ Dir["#{sonic_pi_app_path}/server/ruby/lib/sonicpi/lang/*.rb"].each { |filename| 
 # Generate syntax and completion files
 File.open(File.join(File.dirname(__FILE__), '../syntax/sonicpi.vim'), 'w') do |f|
   SonicPi::Lang::Core.docs.keys.map { |s| s.to_s }.each do |keyword|
-    f.puts "syntax keyword #{highlight_group[keyword]} #{keyword}"
+    if keyword.end_with? '?', '!'
+      f.puts "syntax match #{highlight_group[keyword]} '\\V\\<#{keyword}\\k\\@!'"
+    else
+      f.puts "syntax keyword #{highlight_group[keyword]} #{keyword}"
+    end
   end
 
   f.puts ''
