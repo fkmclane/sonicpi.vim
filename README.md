@@ -2,7 +2,7 @@
 
 The Sonic Pi (Neo)Vim plugin requires the following:
 
-* An installation of [Sonic Pi](http://www.sonic-pi.net/) (currently tested against 3.3.0)
+* An installation of [Sonic Pi](http://www.sonic-pi.net/) (currently tested against 3.3.1)
 * A tool to interface with Sonic Pi. The default is [sonic-pi-tool](https://github.com/emlyn/sonic-pi-tool)
 
 Either Neovim or Vim 8.1+ is required for log, built-in server, and recording support but older versions of Vim should gracefully fallback to basic functionality.
