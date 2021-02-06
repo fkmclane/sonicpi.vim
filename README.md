@@ -15,7 +15,7 @@ The plugin enables itself when Sonic Pi is running and the Ruby filetype is init
 * `<leader>r` - Send the current buffer or selection to Sonic Pi and show log (`let g:sonic_pi_autolog_enabled = 0` to disable automatic log popout)
 * `<leader>c` - Close log output (`let g:sonic_pi_autolog_enabled = 0` to disable automatic log popout)
 * `<leader>S` - Send stop message to Sonic Pi
-* Contextual autocompletion of Sonic Pi terms with omnicomplete (`<C-x><C-o>` by default). That is, if you have `synth :zawa` in the line, omnicomplete will provide parameter names for `:zawa`, et al!
+* Contextual autocompletion of Sonic Pi terms with omnicomplete (`<C-x><C-o>` by default). That is, if you have `synth :zawa` in the line, omnicomplete will provide parameter names for `:zawa`, and more!
 * Extension of Ruby syntax to include Sonic Pi terms
 * Starting and stopping Sonic Pi server via `:SonicPiStartServer` and `:SonicPiStopServer`
 * Recording a Sonic Pi session via `:SonicPiStartRecording <filename>` and `:SonicPiStopRecording`
@@ -56,6 +56,7 @@ Whenever Sonic Pi is running and you haven't disabled the `g:sonic_pi_enabled` f
 * `g:sonic_pi_command` - Command to use for Sonic Pi interfacing (default: 'sonic-pi-tool')
 * `g:sonic_pi_check` - Subcommand to use for checking whether Sonic Pi is running (default: 'check')
 * `g:sonic_pi_run` - Subcommand to use for starting a standalone server (default: 'start-server')
+* `g:sonic_pi_run_args` - Arguments to supply to the run subcommand (default: '[]')
 * `g:sonic_pi_eval` - Subcommand to use for sending stdin to Sonic Pi (default: 'eval-stdin')
 * `g:sonic_pi_stop` - Subcommand to use to give Sonic Pi the stop command (default: 'stop')
 * `g:sonic_pi_logs` - Subcommand to use for following log output (default: 'logs')

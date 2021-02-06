@@ -15,6 +15,10 @@ if !exists('g:sonic_pi_run')
   let g:sonic_pi_run = 'start-server'
 endif
 
+if !exists('g:sonic_pi_run_args')
+  let g:sonic_pi_run_args = []
+endif
+
 if !exists('g:sonic_pi_eval')
   let g:sonic_pi_eval = 'eval-stdin'
 endif
@@ -109,7 +113,7 @@ function! s:start_server()
   endif
 
   if has('nvim')
-    let s:server_job = jobstart([g:sonic_pi_command, g:sonic_pi_run], {'on_exit': function('s:handle_server_exit')})
+    let s:server_job = jobstart([g:sonic_pi_command, g:sonic_pi_run] + g:sonic_pi_run_args, {'on_exit': function('s:handle_server_exit')})
     if s:server_job <= 0 || jobwait([s:server_job], 0)[0] != -1
       s:server_job = v:null
       echo 'Error starting server'
