@@ -47,6 +47,10 @@ if !exists('g:sonic_pi_keymaps_enabled')
   let g:sonic_pi_keymaps_enabled = 1
 endif
 
+if !exists('g:sonic_pi_log_width')
+  let g:sonic_pi_log_width = 70
+endif
+
 let s:server_job = v:null
 let s:record_job = v:null
 
@@ -206,13 +210,13 @@ function! s:show_log()
   endif
 
   if buflisted('Sonic Pi Log')
-    execute 'belowright vertical 70 split #' . bufnr('Sonic Pi Log')
+    execute 'belowright vertical ' . g:sonic_pi_log_width . ' split #' . bufnr('Sonic Pi Log')
     normal G0
     execute cur . ' wincmd w'
     return
   endif
 
-  belowright vertical 70 new
+  execute 'belowright vertical ' . g:sonic_pi_log_width . ' new'
   setlocal buftype=nofile bufhidden=wipe nobuflisted noswapfile nowrap
 
   setlocal nomodifiable
