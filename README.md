@@ -41,6 +41,8 @@ Prerequisites: [Sonic Pi](http://www.sonic-pi.net/) and [sonic-pi-tool](https://
 
 * [vim-plug](https://github.com/junegunn/vim-plug)
   * `Plug 'lilyinstarlight/vim-sonic-pi'`
+* [Neovim packages](https://neovim.io/doc/user/repeat.html#packages)
+  * `git clone https://github.com/lilyinstarlight/vim-sonic-pi.git ~/.local/share/nvim/site/pack/plugins/start/vim-sonic-pi`
 * [Vim 8 packages](http://vimhelp.appspot.com/repeat.txt.html#packages)
   * `git clone https://github.com/lilyinstarlight/vim-sonic-pi.git ~/.vim/pack/plugins/start/vim-sonic-pi`
 * [Pathogen](https://github.com/tpope/vim-pathogen)
