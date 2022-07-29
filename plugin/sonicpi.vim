@@ -172,12 +172,12 @@ function! s:stop_server()
 endfunction
 
 function! s:check_server()
-  call system(g:sonic_pi_command . ' ' . g:sonic_pi_check . ' >/dev/null 2>&1')
+  call system(shellescape(g:sonic_pi_command) . ' ' . shellescape(g:sonic_pi_check) . ' >/dev/null 2>&1')
   return v:shell_error == 0
 endfunction
 
 function! s:eval() range
-  call system(g:sonic_pi_command . ' ' . g:sonic_pi_eval . ' >/dev/null 2>&1', join(getline(a:firstline, a:lastline), "\n"))
+  call system(shellescape(g:sonic_pi_command) . ' ' . shellescape(g:sonic_pi_eval) . ' >/dev/null 2>&1', join(getline(a:firstline, a:lastline), "\n"))
   if v:shell_error
     echo 'Eval command failed'
     echo "If the file is too large, try using 'run_file' from another buffer"
@@ -186,7 +186,7 @@ function! s:eval() range
 endfunction
 
 function! s:stop()
-  call system(g:sonic_pi_command . ' ' . g:sonic_pi_stop . ' >/dev/null 2>&1')
+  call system(shellescape(g:sonic_pi_command) . ' ' . shellescape(g:sonic_pi_stop) . ' >/dev/null 2>&1')
 endfunction
 
 function! s:show_log()
@@ -231,7 +231,7 @@ function! s:show_log()
     let term = 'terminal ++curwin'
   endif
 
-  execute term . ' ' . g:sonic_pi_command . ' ' . g:sonic_pi_logs
+  execute term . ' ' . shellscape(g:sonic_pi_command) . ' ' . shellescape(g:sonic_pi_logs)
 
   setlocal nonumber
 
