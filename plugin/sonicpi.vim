@@ -231,7 +231,7 @@ function! s:show_log()
     let term = 'terminal ++curwin'
   endif
 
-  execute term . ' ' . shellscape(g:sonic_pi_command) . ' ' . shellescape(g:sonic_pi_logs)
+  execute term . ' ' . shellescape(g:sonic_pi_command) . ' ' . shellescape(g:sonic_pi_logs)
 
   setlocal nonumber
 
